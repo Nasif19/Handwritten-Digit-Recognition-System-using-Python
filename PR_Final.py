@@ -9,7 +9,7 @@ from sklearn.svm import SVC
 import cv2
 import numpy as np
 import glob
-from scipy import misc
+# from scipy import misc
 
 def lbp_calculated_pixel(img, x, y):
     '''
@@ -77,7 +77,8 @@ def main():
         for img in glob.glob(filename+'/*.*'):
             try :
                 img_rgb= cv2.imread(img)
-                img_rgb=misc.imresize(img_rgb,(126,126))
+                # img_rgb=misc.imresize(img_rgb,(126,126))
+                img_rgb=cv2.resize(img_rgb, dsize=(126,126), interpolation=cv2.INTER_CUBIC)
                 height, width, channel = img_rgb.shape
                 img_gray=cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
                 
@@ -112,11 +113,12 @@ def main():
     filename = input("Enter the file name in which images are present = ")
     for im in glob.glob(filename+'/*.*'):
             try :
-                img= cv2.imread(im)
-                img_rgb=misc.imresize(img,(126,126))
+                img=cv2.imread(im)
+                # img_rgb=misc.imresize(img,(126,126))
+                img_rgb=cv2.resize(img, dsize=(126,126), interpolation=cv2.INTER_CUBIC)
                 height, width, channel = img_rgb.shape
                 img_gray=cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-                lst= np.zeros((int((height*width)/9)), np.uint8)
+                lst= ~np.zeros((int((height*width)/9)), np.uint8)
                 
                 i=0
                 p=0
@@ -132,7 +134,8 @@ def main():
                 print('Prediction:',clf.predict(lst.reshape(1,-1)))
                 prediction= clf.predict(lst.reshape(1,-1))
                 font = cv2.FONT_HERSHEY_SIMPLEX
-                img=misc.imresize(img,(256,256))
+                # img=misc.imresize(img,(256,256))
+                img=cv2.resize(img, dsize=(126,126), interpolation=cv2.INTER_CUBIC)
                 cv2.putText(img, str(prediction[0]),(10,70), font, 3, (0,255,0), 3, cv2.LINE_AA)
                 cv2.imshow("Image", img)
                 cv2.waitKey(0)
